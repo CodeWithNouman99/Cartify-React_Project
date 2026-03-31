@@ -8,7 +8,7 @@ import {
   SignUpButton,
   UserButton
 } from '@clerk/clerk-react'
-import { MdLocationPin, MdExpandMore } from 'react-icons/md'  // ✅ Added MdExpandMore
+import { MdLocationPin, MdExpandMore } from 'react-icons/md'
 // Removed FaCartDown import since not needed
 
 const Navbar = () => {
@@ -66,7 +66,7 @@ const Navbar = () => {
       <div className="hidden md:flex gap-1 cursor-pointer text-gray-700 items-center border-r border-gray-200 pr-3 hover:text-black transition-colors">
         <MdLocationPin className="text-black h-5 w-5" />
         <span className="text-sm font-medium">Add Address</span>
-        <MdExpandMore className="text-gray-500 h-4 w-4" />  {/* ✅ Dropdown icon */}
+        <MdExpandMore className="text-gray-500 h-4 w-4" /> 
       </div>
 
       {/* Authentication */}
