@@ -1,13 +1,16 @@
 import React from 'react'
 import { IoCartOutline } from "react-icons/io5"
-
+import { useNavigate } from 'react-router-dom'
 const ProductCard = ({ product }) => {
+  const navigate=useNavigate()    // For single Product
   // console.log(product)
   // console.log(product.images)
   return (
     <div className='border relative border-gray-200 rounded-2xl cursor-pointer hover:scale-105 hover:shadow-2xl transition-all p-2 h-max'>
       {/* <img src={product.images} className='bg-gray-100 aspect-square' alt="" /> */}
-      <img
+
+      <img onClick={()=>navigate(`/products/${product.id}`)}      //Yha single product k liye kr rahey he navigate
+
         src={product.thumbnail || product.images[0]}
         onError={(e) => {
           e.target.src = 'fallback-image-url.jpg';
