@@ -25,6 +25,23 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 
+  /* Black, White & Cream palette */
+--background: #f5f0e8;
+--foreground: #121212;
+--card: #ffffff;
+--card-foreground: #121212;
+--primary: #121212;
+--primary-foreground: #f5f0e8;
+--secondary: #ede8dd;
+--secondary-foreground: #121212;
+--muted: #e8e2d8;
+--muted-foreground: #666666;
+--accent: #e0d9cc;
+--accent-foreground: #121212;
+--cream: #f5f0e8;
+--cream-dark: #e0d9cc;
+
+
   @media (max-width: 1024px) {
     font-size: 16px;
   }

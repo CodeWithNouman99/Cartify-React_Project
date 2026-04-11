@@ -8,8 +8,7 @@ import {
   SignUpButton,
   UserButton
 } from '@clerk/clerk-react'
-import { MdLocationPin, MdExpandMore } from 'react-icons/md'  // ✅ Added MdExpandMore
-// Removed FaCartDown import since not needed
+import { MdLocationPin, MdExpandMore } from 'react-icons/md' 
 
 const Navbar = () => {
   const Links = [
