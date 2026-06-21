@@ -1,28 +1,88 @@
-import React from 'react'
-import { IoCartOutline } from "react-icons/io5"
+import React, { memo, useCallback, useState } from 'react'
+import { IoCartOutline } from 'react-icons/io5'
 import { useNavigate } from 'react-router-dom'
+import { useCart } from '../context/CartContext'
+
+const FALLBACK_IMAGE = '/images/product-fallback.jpg'
+
 const ProductCard = ({ product }) => {
-  const navigate=useNavigate()    // For single Product
-  // console.log(product)
-  // console.log(product.images)
+  const navigate = useNavigate()
+  const { addToCart } = useCart()
+  const [imgSrc, setImgSrc] = useState(
+    product?.thumbnail || product?.images?.[0] || FALLBACK_IMAGE
+  )
+  const [isAdding, setIsAdding] = useState(false)
+
+  if (!product) return null
+
+  const goToProduct = useCallback(() => {
+    navigate(`/products/${product.id}`)
+  }, [navigate, product.id])
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault()
+      goToProduct()
+    }
+  }
+
+  const handleAddToCart = async (e) => {
+    e.stopPropagation()
+    if (isAdding) return
+    try {
+      setIsAdding(true)
+      await addToCart(product)
+    } finally {
+      setIsAdding(false)
+    }
+  }
+
+  const formattedPrice = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(product.price)
+
   return (
-    <div className='border relative border-gray-200 rounded-2xl cursor-pointer hover:scale-105 hover:shadow-2xl transition-all p-2 h-max'>
-      {/* <img src={product.images} className='bg-gray-100 aspect-square' alt="" /> */}
+    <article
+      role="button"
+      tabIndex={0}
+      onClick={goToProduct}
+      onKeyDown={handleKeyDown}
+      aria-label={`View details for ${product.title}`}
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-slate-300 hover:shadow-[0_20px_40px_-15px_rgba(15,23,42,0.15)] focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+    >
+      <div className="aspect-square w-full overflow-hidden rounded-xl bg-slate-50">
+        <img
+          src={imgSrc}
+          alt={product.title}
+          loading="lazy"
+          decoding="async"
+          onError={() => setImgSrc(FALLBACK_IMAGE)}
+          className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
+        />
+      </div>
 
-      <img onClick={()=>navigate(`/products/${product.id}`)}      //Yha single product k liye kr rahey he navigate
+      <div className="mt-3 flex flex-1 flex-col">
+        <h3 className="line-clamp-2 min-h-10 text-sm font-semibold text-slate-900">
+          {product.title}
+        </h3>
+        <p className="my-2 text-lg font-bold text-slate-900 tracking-tight">
+          {formattedPrice}
+        </p>
 
-        src={product.thumbnail || product.images[0]}
-        onError={(e) => {
-          e.target.src = 'fallback-image-url.jpg';
-          e.target.onerror = null;
-        }}
-        alt={product.title}
-      />
-      <h1 className='line-clamp-2 p-1 font-semibold'>{product.title}</h1>
-      <p className='my-1 text-lg text-gray-800 font-bold'>${product.price}</p>
-      <button className='bg-red-500 px-3 py-2 text-lg rounded-md text-white w-full cursor-pointer flex gap-2 items-center justify-center font-semibold'><IoCartOutline className='w-6 h-6'></IoCartOutline>Add to Cart</button>
-    </div>
+        <button
+          type="button"
+          onClick={handleAddToCart}
+          disabled={isAdding}
+          aria-label={`Add ${product.title} to cart`}
+          className="mt-auto flex w-full items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-base font-semibold text-white transition-all duration-200  hover:bg-gray-800 hover:text-white hover:border-gray-800 active:scale-95 disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-400"
+        >
+          <IoCartOutline className="h-5 w-5" aria-hidden="true" />
+          {isAdding ? 'Adding…' : 'Add to Cart'}
+        </button>
+      </div>
+    </article>
   )
 }
 
-export default ProductCard
+export default memo(ProductCard)

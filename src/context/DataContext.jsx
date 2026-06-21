@@ -16,6 +16,8 @@ export const DataProvider = ({ children }) => {
     }
   };
 
+  
+
   const getUniqueCategory = (data, property) => {
     let newVal = data.map(curElem => curElem[property]);
     newVal = ["All",...new Set(newVal)];

@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { NavLink } from 'react-router-dom'
-import { FiShoppingCart } from 'react-icons/fi'
+import { FiShoppingCart, FiMenu, FiX, FiSearch } from 'react-icons/fi'
 import {
   SignedIn,
   SignedOut,
@@ -8,86 +8,141 @@ import {
   SignUpButton,
   UserButton
 } from '@clerk/clerk-react'
-import { MdLocationPin, MdExpandMore } from 'react-icons/md' 
+import { MdLocationPin, MdExpandMore } from 'react-icons/md'
+import { useCart } from '../context/CartContext'
+// import { useCart } from '../context/CartContext'
 
 const Navbar = () => {
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [addressOpen, setAddressOpen] = useState(false)
+  const { cartItem } = useCart()
+
   const Links = [
     { name: "Home", path: "/" },
     { name: "Products", path: "/products" },
     { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" }
   ]
-  
+
+
+
   return (
-    <div className='bg-white/80 backdrop-blur-md rounded-full h-16 w-[90%] md:w-[80%] lg:w-[70%] mx-auto mt-3 flex items-center justify-between px-4 md:px-8 shadow-lg border border-gray-100'>
+    <header className="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md shadow-sm">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
 
-      {/* Logo Div */}
-      <div className="flex items-center gap-1">
-        <span className="text-xl md:text-2xl font-black bg-black text-white px-4 py-1 rounded-full shadow-lg">
-          Cart
-        </span>
-        <span className="text-xl md:text-2xl font-bold bg-linear-to-r from-gray-600 to-gray-400 bg-clip-text text-transparent">
-          ify
-        </span>
-      </div>
+        {/* Logo Div */}
+        <div className="flex items-center gap-2">
+          <button
+            className="md:hidden text-gray-700 hover:text-gray-900 transition"
+            onClick={() => setMobileOpen(!mobileOpen)}
+            aria-label="Toggle menu"
+          >
+            {mobileOpen ? <FiX className="h-6 w-6" /> : <FiMenu className="h-6 w-6" />}
+          </button>
 
-      {/* Items */}
-      <ul className="hidden md:flex items-center space-x-1 lg:space-x-6">
-        {Links.map((link) => (
-          <li key={link.name}>
+          <NavLink to="/" className="flex items-center gap-1">
+            <span className="text-2xl font-bold tracking-tight text-gray-900">
+              Cartify
+            </span>
+            <span className="h-2 w-2 rounded-full bg-gray-900" />
+          </NavLink>
+        </div>
+
+        {/* Items */}
+        <nav className="hidden md:flex items-center gap-1">
+          {Links.map((link) => (
             <NavLink
+              key={link.name}
               to={link.path}
               className={({ isActive }) =>
-                `relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${
-                  isActive
-                    ? "text-gray-900 bg-gray-100"
-                    : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                `relative px-4 py-2 text-sm font-medium rounded-full transition-all duration-200 ${isActive
+                  ? "text-gray-900 bg-gray-100"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
                 }`
               }
             >
               {link.name}
             </NavLink>
-          </li>
-        ))}
-      </ul>
+          ))}
+        </nav>
 
-      {/* Cart Div */}
-      <div className="flex items-center space-x-3 md:space-x-4">
-        <button className="relative p-2 text-gray-600 hover:text-black">
-          <FiShoppingCart className="h-6 w-6" />
-          <span className="absolute -top-1 -right-1 bg-black text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-            0
-          </span>
-        </button>
+        {/* Right side controls */}
+        <div className="flex items-center gap-2 sm:gap-3">
+
+          {/* Search (desktop) */}
+          {/* <button
+            aria-label="Search"
+            className="hidden sm:flex h-9 w-9 items-center justify-center rounded-full text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition"
+          >
+            <FiSearch className="h-5 w-5" />
+          </button> */}
+
+
+
+          {/* Cart Div */}
+          <NavLink
+            to="/cart"
+            className="relative flex h-9 w-9 items-center justify-center rounded-full text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition"
+            aria-label="Cart"
+          >
+            <FiShoppingCart className="h-5 w-5" />
+            <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-gray-900 text-[10px] font-semibold text-white">
+              {cartItem.length}
+            </span>
+          </NavLink>
+
+          {/* Authentication */}
+          <div className="flex items-center gap-2 pl-1 sm:pl-2 sm:border-l sm:border-gray-200 sm:ml-1">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="hidden sm:inline-flex px-3 py-1.5 text-sm font-medium text-gray-700 rounded-full hover:text-gray-900 hover:bg-gray-100 transition">
+                  Sign In
+                </button>
+              </SignInButton>
+              <SignUpButton mode="modal">
+                <button className="px-4 py-1.5 text-sm font-medium text-white bg-gray-900 rounded-full hover:bg-gray-800 transition shadow-sm">
+                  Sign Up
+                </button>
+              </SignUpButton>
+            </SignedOut>
+            <SignedIn>
+              <UserButton
+                appearance={{
+                  elements: {
+                    avatarBox: "h-8 w-8 ring-2 ring-gray-200 hover:ring-gray-300 transition"
+                  }
+                }}
+              />
+            </SignedIn>
+          </div>
+        </div>
       </div>
 
-      {/* Address icon with dropdown */}
-      <div className="hidden md:flex gap-1 cursor-pointer text-gray-700 items-center border-r border-gray-200 pr-3 hover:text-black transition-colors">
-        <MdLocationPin className="text-black h-5 w-5" />
-        <span className="text-sm font-medium">Add Address</span>
-        <MdExpandMore className="text-gray-500 h-4 w-4" /> 
-      </div>
-
-      {/* Authentication */}
-      <header className="flex items-center space-x-2">
-        <SignedOut>
-          <SignInButton mode="modal">
-            <button className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-black transition-colors">
-              Sign In
-            </button>
-          </SignInButton>
-          <SignUpButton mode="modal">
-            <button className="px-4 py-2 text-sm font-medium bg-black text-white rounded-full hover:bg-gray-800 transition-colors">
-              Sign Up
-            </button>
-          </SignUpButton>
-        </SignedOut>
-        <SignedIn>
-          <UserButton afterSignOutUrl="/" />
-        </SignedIn>
-      </header>
-
-    </div>
+      {/* Mobile menu */}
+      {mobileOpen && (
+        <nav className="md:hidden border-t border-gray-200 bg-white px-4 py-3 flex flex-col gap-1 animate-in fade-in slide-in-from-top-1 duration-150">
+          {Links.map((link) => (
+            <NavLink
+              key={link.name}
+              to={link.path}
+              onClick={() => setMobileOpen(false)}
+              className={({ isActive }) =>
+                `px-4 py-2.5 text-sm font-medium rounded-lg transition ${isActive
+                  ? "text-gray-900 bg-gray-100"
+                  : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+                }`
+              }
+            >
+              {link.name}
+            </NavLink>
+          ))}
+          <button className="flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-gray-700 rounded-lg hover:bg-gray-50 transition">
+            <MdLocationPin className="h-5 w-5" />
+            Add Address
+          </button>
+        </nav>
+      )}
+    </header>
   )
 }
 

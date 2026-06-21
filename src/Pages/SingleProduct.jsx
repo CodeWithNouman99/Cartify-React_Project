@@ -1,12 +1,14 @@
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { useCart } from '../context/CartContext'
 
-
-const SingleProduct = () => {
+const SingleProduct = ({ product }) => {
   const [singleProduct, setSingleProduct] = useState(null);
   const [activeImage, setActiveImage] = useState("");
 
+  const [quantity, setQuantity] = useState(1)
+  const { addToCart, cartItem } = useCart()
   const params = useParams()
   console.log(params)
 
@@ -14,7 +16,7 @@ const SingleProduct = () => {
     try {
       const response = await axios.get(`https://dummyjson.com/products/${params.id}`)
       const product = response.data
-      setSingleProduct(product)      
+      setSingleProduct(product)
       // console.log(product)
     } catch (error) {
       console.log(error)
@@ -113,7 +115,30 @@ const SingleProduct = () => {
             <div className="text-sm text-gray-600">
               Return: {singleProduct.returnPolicy}
             </div>
-            <button className=' className="mt-4 bg-black text-white py-3 rounded-lg hover:bg-gray-800 cursor-pointer">
+
+
+            {/* Quantity Section */}
+            <div className="flex items-center gap-4 mt-4">
+              <h3 className='font-bold'>Quantity</h3>
+              <button
+
+                onClick={() => setQuantity(quantity > 1 ? quantity - 1 : 1)}
+                className="px-3 py-1 bg-gray-200"
+
+              >
+                -
+              </button>
+
+              <span className="text-lg">{quantity}</span>
+
+              <button
+                onClick={() => setQuantity(quantity + 1)}
+                className="px-3 py-1 bg-gray-200"
+              >
+                +
+              </button>
+            </div>
+            <button onClick={() => addToCart(singleProduct)} className='mt-4 bg-black text-white py-3 rounded-lg hover:bg-gray-800 cursor-pointer">
               Add to Cart'>Add to Cart</button>
 
 

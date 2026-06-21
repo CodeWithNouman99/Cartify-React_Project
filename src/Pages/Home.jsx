@@ -1,22 +1,21 @@
 import React from 'react'
 import Carousel from '../components/Carousel'
-// import ProductGrid from "../components/ProductGrid"
-import OfferBanner from '../components/OfferBanner'
-import CategoriesSection from '../components/CategoriesSection'
-// import NewArrivals from '../components/NewArrivals'
-import Testimonials from '../components/Testimonials'
-import Newsletter from '../components/NewsLetter'
+import HomeProductCard from '../components/HomeProductCard'
+import Categories from '../components/Categories'
+import { useState } from 'react'
+import PromoBanner from '../components/Banner'
 import Footer from '../components/Footer'
+import Testimonials from '../components/Testimonials'
 const Home = () => {
+  const [selectedCategory, setSelectedCategory] = useState("All");
   return (
     <div>
       <Carousel></Carousel>
-      <CategoriesSection></CategoriesSection>
-      {/* <ProductGrid></ProductGrid> */}
-      <OfferBanner></OfferBanner>
-      {/* <NewArrivals></NewArrivals> */}
+      <Categories selectedCategory={selectedCategory}
+        setSelectedCategory={setSelectedCategory}></Categories>
+      <HomeProductCard selectedCategory={selectedCategory}></HomeProductCard>
+      <PromoBanner></PromoBanner>
       <Testimonials></Testimonials>
-      <Newsletter></Newsletter>
       <Footer></Footer>
     </div>
   )
